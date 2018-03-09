@@ -2,34 +2,34 @@ pragma solidity ^0.4.17;
 
 contract Splitter {
   
-  address  public alice;
-  address  public bob;
-  address  public carol;
+  address  public owner;
+  address  public payeeOne;
+  address  public payeeTwo;
 
   function Splitter() public {
-      alice = msg.sender;
+      owner = msg.sender;
   }
   
-  function createBob(address currentBob) public {
-         bob = currentBob;
+  function createPayeeOne(address currentPayee) public {
+         payeeOne = currentPayee;
   }
 
-  function createCarol(address currentCarol) public {
-         carol = currentCarol;
+  function createPayeeTwo(address currentPayee) public {
+         payeeTwo = currentPayee;
   }
 
   function contributeAndSplit() payable public returns(bool sucess) {
-      require(alice.balance>=msg.value);
+      require(owner.balance>=msg.value);
           
-         bob.transfer((msg.value)/2);
-         carol.transfer((msg.value)/2);
+         payeeOne.transfer((msg.value)/2);
+         payeeTwo.transfer((msg.value)/2);
           
       return true;
   }
 
   function kill() public { 
-   require(msg.sender == alice);
-    selfdestruct(alice);       
+   require(msg.sender == owner);
+    selfdestruct(owner);       
 }
 
 }
