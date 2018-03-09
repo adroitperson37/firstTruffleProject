@@ -2,26 +2,28 @@ var Splitter = artifacts.require("./Splitter.sol");
 
 contract('Splitter',function(accounts){
     
+    var instance;
+    var first = accounts[1];
+    var second = accounts[2];
+
+    beforeEach('setup contract for each test', function () {
+        return Splitter.new().then(function(_instance) {
+            console.log("created new contract");
+            instance = _instance;
+        });
+    });
+
 
     it("should create PayeeOne",function(){
- let instance;
 
- return Splitter.deployed().then( _instance => {
-     instance = _instance;
-     return instance.createPayeeOne("0x22A41BFF5186295789DecD900048f23FFED22979");
- })
+   return instance.createPayeeOne(first)
  .then(txObj => {
     assert.strictEqual(txObj.receipt.status, 1, "Only one");
  })
 });
 
 it("should create PayeeTwo",function(){
-    let instance;
-   
-    return Splitter.deployed().then( _instance => {
-        instance = _instance;
-        return instance.createPayeeTwo("0xe23E93fe863e0de0BC0A24c7d3B4eCb7a3299524");
-    })
+    return instance.createPayeeOne(first)
     .then(txObj => {
        assert.strictEqual(txObj.receipt.status, 1, "Only one");
     })
@@ -29,14 +31,9 @@ it("should create PayeeTwo",function(){
    
 
    it("should split amount between PayeeOne and PayeeTwo",function(){
-    let instance;
-   
-    return Splitter.deployed().then( _instance => {
-        instance = _instance;
-        return instance.contributeAndSplit({value:web3.toWei(1,"ether")});
-    })
+    return instance.contributeAndSplit({value:web3.toWei(1,"ether")})
     .then(txObj => {
-       assert.strictEqual(txObj.receipt.status, 1, "Only one");
+       assert.strictEqual(txObj.logs.length, 1, "Only one event");
     })
    });
 

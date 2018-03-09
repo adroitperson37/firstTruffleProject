@@ -7,6 +7,7 @@ contract Splitter {
   address  public payeeTwo;
 
 
+
   function Splitter() public {
       owner = msg.sender;
   }
@@ -38,10 +39,11 @@ contract Splitter {
 
   function contributeAndSplit() payable public returns(bool sucess) {
       require(msg.value>0);
-          
+        
+        uint amount = ((msg.value)/2);
 
-         payeeOne.transfer((msg.value)/2);
-         payeeTwo.transfer((msg.value)/2);
+         payeeOne.transfer(amount);
+         payeeTwo.transfer(amount);
          LogSplitEther(msg.sender, msg.value, payeeOne, payeeTwo);
           
       return true;
