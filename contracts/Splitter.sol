@@ -18,18 +18,33 @@ contract Splitter {
   event LogSplitEther(address from, uint value, address payeeOne, address payeeTwo);
   
 
-  function splitAmount (address firstPayee, address secondPayee)  public  payable{
+  function splitAmount (address firstPayee, address secondPayee)  public  payable {
       require(msg.value>0);
-        
+    
+    //TODO: Check for valid address
+
+         payees.push(firstPayee);
+        payees.push(secondPayee);
+
+
        uint dividedValue = msg.value/2;
 
         //Checking for even amount. If not return.
-        require(2*dividedValue == msg.value);
+        if (2*dividedValue == msg.value) {
+         payeesRecord[firstPayee] += dividedValue;
+         payeesRecord[secondPayee] += dividedValue;
+        }else {
+            
+        uint remainingBalance = (this.balance - (2*dividedValue));
+        //TODO: In solidity documentation it says 0.5 will be taken but in code its not taking
+         uint actualAmount = dividedValue+remainingBalance/2;
+         payeesRecord[firstPayee] += actualAmount;
+         payeesRecord[secondPayee] += actualAmount;
 
-        payees.push(firstPayee);
-        payees.push(secondPayee);
-        payeesRecord[firstPayee] += dividedValue;
-        payeesRecord[secondPayee] += dividedValue;
+        }
+
+       
+        
 
         LogSplitEther(msg.sender, msg.value, firstPayee, secondPayee);
           

@@ -16,7 +16,7 @@ contract('Splitter',function(accounts){
    
 
    it("should split amount between PayeeOne and PayeeTwo",function(){
-    return instance.splitAmount(first,second,{from:sender , value:web3.toWei(10,"ether")} )
+    return instance.splitAmount(first,second,{from:sender , value:11} )
     .then(txObj => {
        assert.strictEqual(txObj.logs.length, 1, "Only one event");
     })
@@ -25,14 +25,14 @@ contract('Splitter',function(accounts){
    it("should verify PayeeOne Amount",function(){
     return instance.payeesRecord.call(first)
     .then(value => {
-       assert.strictEqual(value.c[0], 50000,"Exactly half");
+       assert.strictEqual(value.c[0], 5,"Exactly half");
     })
    });
 
    it("should verify PayeeTwo Amount",function(){
     return instance.payeesRecord.call(second)
     .then(value => {
-       assert.strictEqual(value.c[0], 50000, "Exactly half");
+       assert.strictEqual(value.c[0], 5, "Exactly half");
     })
    });
 
