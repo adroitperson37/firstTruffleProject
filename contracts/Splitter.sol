@@ -16,17 +16,14 @@ contract Splitter {
     }
 
   event LogSplitEther(address from, uint value, address payeeOne, address payeeTwo);
+  event WithDrawal(address withdrawAddress,uint value);
   
 
   function splitAmount (address firstPayee, address secondPayee)  public  payable {
-      require(msg.value>0);
+      require(msg.value>0 && firstPayee!=0 && secondPayee!=0);
     
-    //TODO: Check for valid address
-
          payees.push(firstPayee);
         payees.push(secondPayee);
-
-
        uint dividedValue = msg.value/2;
 
         //Checking for even amount. If not return.
@@ -34,12 +31,9 @@ contract Splitter {
          payeesRecord[firstPayee] += dividedValue;
          payeesRecord[secondPayee] += dividedValue;
         }else {
-            
-        uint remainingBalance = (this.balance - (2*dividedValue));
-        //TODO: In solidity documentation it says 0.5 will be taken but in code its not taking
-         uint actualAmount = dividedValue+remainingBalance/2;
-         payeesRecord[firstPayee] += actualAmount;
-         payeesRecord[secondPayee] += actualAmount;
+        //TODO: distribution of  1 wei left in the contract account
+         payeesRecord[firstPayee] += dividedValue;
+         payeesRecord[secondPayee] += dividedValue;
 
         }
 
@@ -53,10 +47,14 @@ contract Splitter {
   function withdraw() public {
       //Check if the amount is present and greater than zero.
     require(payeesRecord[msg.sender]>0);
-    //Send the amount
-    msg.sender.transfer(payeesRecord[msg.sender]);
-    //Once sent successfully deduct the amount.
+    uint amount = payeesRecord[msg.sender];
+
+    //Change state before transer
     payeesRecord[msg.sender] = 0;
+    //Send the amount
+    msg.sender.transfer(amount);
+    //Emit event
+    WithDrawal(msg.sender,amount);
 
   }
 
