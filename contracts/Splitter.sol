@@ -2,7 +2,7 @@ pragma solidity ^0.4.17;
 
 contract Splitter {
   
- address owner; 
+ address public owner; 
  mapping(address => uint) public payeesRecord;
  address[] payees;
  
